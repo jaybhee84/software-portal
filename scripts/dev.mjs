@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import handler from '../api/catalog.js';
 // Optional local env; silently skipped when .env is absent.
 try { process.loadEnvFile(new URL('../.env', import.meta.url)); } catch {}
-const files = { '/ape.png': ['ape.png', 'image/png'], '/printers/l3210.jpg': ['printers/l3210.jpg', 'image/jpeg'], '/printers/l120.jpg': ['printers/l120.jpg', 'image/jpeg'], '/iswabe.png': ['iswabe.png', 'image/png'], '/swiss.png': ['swiss.png', 'image/png'], '/bmi.png': ['bmi.png', 'image/png'], '/iecesportal.png': ['iecesportal.png', 'image/png'], '/buzzjay.png': ['buzzjay.png', 'image/png'], '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
+const files = { '/ape.png': ['ape.png', 'image/png'], '/iswabe.png': ['iswabe.png', 'image/png'], '/swiss.png': ['swiss.png', 'image/png'], '/bmi.png': ['bmi.png', 'image/png'], '/iecesportal.png': ['iecesportal.png', 'image/png'], '/buzzjay.png': ['buzzjay.png', 'image/png'], '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
 const server = http.createServer(async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const path = new URL(req.url, 'http://localhost').pathname;
@@ -11,6 +11,8 @@ const server = http.createServer(async (req, res) => {
   res.json = data => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(data)); };
   try {
     if (path === '/api/catalog') return await handler(req, res);
+    // Printer photos for Google Drive downloads.
+    if (/^\/printers\/[\w-]+\.jpg$/.test(path)) files[path] = [path.slice(1), 'image/jpeg'];
     if (!files[path]) { res.statusCode = 404; return res.end('Not found'); }
     const [file, type] = files[path]; res.setHeader('Content-Type', type);
     res.end(await readFile(new URL(`../public/${file}`, import.meta.url)));
