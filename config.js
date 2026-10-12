@@ -15,6 +15,6 @@ export const apps = [
     { label: 'Epson L3110', note: 'L3110 all-in-one ink tank printer.', image: '/printers/l3110.jpg', name: 'Epson_L3110.rar', size: 866848, url: 'https://drive.google.com/file/d/1VcjYYNFDJ2jJXDY5GXKkXvHvieUJ9dGs/view?usp=sharing' },
     { label: 'Epson L120', note: 'L120 single-function ink tank printer.', image: '/printers/l120.jpg', name: 'Epson L120 resetter.rar', size: 570482, url: 'https://drive.google.com/file/d/1nVKqHJNNlVldhDgyvkqDQX2pPrUreP_2/view?usp=sharing' },
     { label: 'Epson L5190', note: 'L5190 all-in-one with ADF and fax.', image: '/printers/l5190.jpg', name: 'EPSON L5190 RESETTER.rar', url: 'https://drive.google.com/file/d/153XoMpzGuDmHllDOMEw5zpJb37igRJha/view?usp=sharing' },
-    { label: 'Epson L1210 / L3210 / L3250 / L3251 / L3260 / L5290', note: 'RAW 1.0.1.1 ZIP archive.', name: 'L1210, L3210, L3250, L3251, L3260, L5290 RAW 1.0.1.1.zip', url: 'https://drive.google.com/file/d/1jwPA_U34dLYmPQak-IhBUzMD0ZTZZJuq/view?usp=drive_link' }
+    { label: 'Epson L1210 / L3210 / L3250 / L3251 / L3260 / L5290', note: 'RAW 1.0.1.1 ZIP archive.', images: [{ src: '/printers/l1210.jpg', label: 'L1210' }, { src: '/printers/l3210.jpg', label: 'L3210' }, { src: '/printers/l3250.jpg', label: 'L3250' }, { src: '/printers/l3251.jpg', label: 'L3251' }, { src: '/printers/l3260.jpg', label: 'L3260' }, { src: '/printers/l5290.jpg', label: 'L5290' }], name: 'L1210, L3210, L3250, L3251, L3260, L5290 RAW 1.0.1.1.zip', url: 'https://drive.google.com/file/d/1jwPA_U34dLYmPQak-IhBUzMD0ZTZZJuq/view?usp=drive_link' }
   ] }
 ];

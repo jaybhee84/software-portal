@@ -8,3 +8,5 @@
 .brand .brand-logo{display:block;width:126px;height:84px;object-fit:contain;border-radius:8px}.footer-logo{display:block;width:90px;height:60px;object-fit:contain;border-radius:6px}footer{align-items:center}@media(max-width:540px){.brand .brand-logo{width:99px;height:66px}}
 
 .app-icon.app-logo{object-fit:contain;background:transparent;box-shadow:none;border-radius:0}.app-card .app-icon.app-logo{background:#fff;border-radius:14px}.app-hero .app-icon.app-logo[src$='.jpg']{border-radius:16px}
+
+.installer-photo.gallery.expanded{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));aspect-ratio:auto;gap:12px;padding:12px}.installer-photo.gallery.expanded span{padding:6px;border-radius:6px;background:#fff}.installer-photo.gallery.expanded img{aspect-ratio:4/3}.installer-photo.gallery.expanded b{font-size:12px}
