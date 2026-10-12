@@ -61,7 +61,7 @@ The token is used only on the server. The API rejects private repositories even 
 - The portal fetches the release marked Latest on GitHub for each app on every page load. Browser and CDN catalog caching are disabled. New releases need no website rebuild.
 - Only the latest stable release and its assets are shown. Older releases and prereleases are excluded; missing installers never fall back to an older version.
 - Release notes are displayed as safe plain text. Markdown formatting is preserved as text, not rendered as HTML. Asset SHA digests appear when GitHub supplies them.
-- App detail URLs use hashes, for example `/#/app/tax-e`, and support direct linking and browser back/forward. This starter does not provide per-app server-rendered SEO pages.
+- App detail URLs use hashes, for example `/#/app/ape-suite`, and support direct linking and browser back/forward. This starter does not provide per-app server-rendered SEO pages.
 - There is no upload/admin dashboard. Edit config.js to change the catalog; publish release assets on GitHub to update downloads.
 
 ## Check the project
