@@ -51,13 +51,16 @@ test('Google Drive downloads are listed without fetching and unsafe links are dr
   const result = await loadApp({ id: 'drive', name: 'Drive app', downloads: [
     { name: 'Folder', url: 'https://drive.google.com/drive/u/0/folders/abc_123?usp=sharing' },
     { name: 'tool.rar', url: 'https://drive.google.com/file/d/xyz-9/view?usp=sharing', size: 1024 },
+    { name: 'other.rar', url: 'https://www.mediafire.com/file/abc123/other.rar/file?x=1' },
     { name: 'evil.rar', url: 'https://drive.google.com.example.org/file/d/xyz/view' },
+    { name: 'fake.rar', url: 'https://mediafire.com.example.org/file/abc123/fake.rar/file' },
     { name: 'script.rar', url: 'javascript:alert(1)' }
   ] }, () => { throw Error('Must not fetch'); });
   assert.equal(result.status, 'live'); assert.equal(result.source, 'drive');
-  assert.deepEqual(result.releases[0].assets.map(a => [a.url, a.folder]), [
-    ['https://drive.google.com/drive/folders/abc_123', true],
-    ['https://drive.google.com/uc?export=download&id=xyz-9', false]
+  assert.deepEqual(result.releases[0].assets.map(a => [a.url, a.host, a.page]), [
+    ['https://drive.google.com/drive/folders/abc_123', 'Google Drive', true],
+    ['https://drive.google.com/uc?export=download&id=xyz-9', 'Google Drive', false],
+    ['https://www.mediafire.com/file/abc123/other.rar/file', 'MediaFire', true]
   ]);
 });
 
