@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeReleases, loadApp } from '../lib/releases.js';
+import { normalizeReleases, releaseStats, loadApp } from '../lib/releases.js';
 const app = { id: 'test', repo: 'owner/releases', assetPattern: '\\.(exe|zip)$' };
 const fixture = { tag_name: 'v2', name: 'Release 2', published_at: '2026-01-10', body: '<script>alert(1)</script>', html_url: 'https://github.com/owner/releases/releases/tag/v2', assets: [{ name: 'setup.exe', state: 'uploaded', size: 2048, browser_download_url: 'https://github.com/owner/releases/releases/download/v2/setup.exe' }, { name: 'bad.zip', state: 'uploaded', browser_download_url: 'javascript:alert(1)' }, { name: 'source.tar', state: 'uploaded', browser_download_url: 'https://github.com/owner/releases/a' }] };
 test('only stable releases and safe matching assets are returned', () => {
@@ -33,7 +33,7 @@ test('fetches only the latest release without caching or falling back to old ins
     assert.equal(options.cache, 'no-store');
     return { ok: true, json: async () => url.endsWith('/releases/latest') ? { ...fixture, tag_name: 'v3', assets: [] } : { private: false } };
   });
-  assert.deepEqual(calls, ['https://api.github.com/repos/owner/releases', 'https://api.github.com/repos/owner/releases/releases/latest']);
+  assert.deepEqual(calls.sort(), ['https://api.github.com/repos/owner/releases', 'https://api.github.com/repos/owner/releases/releases/latest', 'https://api.github.com/repos/owner/releases/releases?per_page=100']);
   assert.equal(result.releases.length, 1);
   assert.equal(result.releases[0].tag, 'v3');
   assert.deepEqual(result.releases[0].assets, []);
@@ -70,4 +70,30 @@ test('latest release errors do not fall back to old data', async () => {
     : { ok: true, json: async () => ({ private: false }) });
   assert.equal(result.status, 'error');
   assert.deepEqual(result.releases, []);
+});
+
+test('download totals count installer assets across stable releases only', () => {
+  const asset = (name, n, state = 'uploaded') => ({ name, state, download_count: n });
+  const stats = releaseStats([
+    { assets: [asset('setup.exe', 10), asset('latest.yml', 500), asset('app.zip', 5, 'new')] },
+    { assets: [asset('setup.exe', 7)] },
+    { draft: true, assets: [asset('setup.exe', 99)] },
+    { prerelease: true, assets: [asset('setup.exe', 99)] }
+  ], app.assetPattern);
+  assert.deepEqual(stats, { downloads: 17, releaseCount: 2 });
+});
+
+test('download totals failing never hides the latest release', async () => {
+  const result = await loadApp(app, async url => url.includes('per_page')
+    ? { ok: false, status: 403 }
+    : { ok: true, json: async () => url.endsWith('/releases/latest') ? fixture : { private: false } });
+  assert.equal(result.status, 'live'); assert.equal(result.releases[0].tag, 'v2');
+  assert.equal(result.downloadCount, null);
+});
+
+test('download totals are attached to live apps', async () => {
+  const result = await loadApp(app, async url => ({ ok: true, json: async () => url.includes('per_page')
+    ? [{ ...fixture, assets: [{ ...fixture.assets[0], download_count: 42 }] }]
+    : url.endsWith('/releases/latest') ? fixture : { private: false } }));
+  assert.equal(result.downloadCount, 42); assert.equal(result.releaseCount, 1);
 });
