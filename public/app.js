@@ -79,9 +79,31 @@ function installers(a) {
 }
 function screenshots(a) {
   if (!a.screenshots?.length) return '';
-  return '<section class="screenshots" aria-label="App screenshots"><h2>Sample screens</h2><p class="muted">Open an image to view full size.</p><div class="screenshot-grid">' + a.screenshots.map(shot => '<figure><a href="' + escape(shot.src) + '" target="_blank" rel="noopener" aria-label="View ' + escape(shot.label) + ' full size"><img src="' + escape(shot.src) + '" alt="' + escape(shot.alt) + '" loading="lazy"></a><figcaption>' + escape(shot.label) + '</figcaption></figure>').join('') + '</div></section>';
+  return '<section class="screenshots" aria-label="App screenshots"><h2>Sample screens</h2><p class="muted">Open an image to view full size.</p><div class="screenshot-grid">' + a.screenshots.map(shot => '<figure><button class="screenshot-open" type="button" aria-label="View ' + escape(shot.label) + ' full size"><img src="' + escape(shot.src) + '" alt="' + escape(shot.alt) + '" loading="lazy"></button><figcaption>' + escape(shot.label) + '</figcaption></figure>').join('') + '</div></section>';
+}
+let screenshotViewer;
+function openScreenshot(img) {
+  if (!screenshotViewer) {
+    screenshotViewer = document.createElement('dialog');
+    screenshotViewer.className = 'screenshot-viewer';
+    screenshotViewer.setAttribute('aria-label', 'Screenshot preview');
+    screenshotViewer.innerHTML = '<button class="screenshot-close" type="button" aria-label="Close screenshot" autofocus>&times;</button><figure><img alt=""><figcaption></figcaption></figure>';
+    document.body.append(screenshotViewer);
+    screenshotViewer.querySelector('button').addEventListener('click', () => screenshotViewer.close());
+    screenshotViewer.addEventListener('click', e => { if (e.target === screenshotViewer) screenshotViewer.close(); });
+    screenshotViewer.addEventListener('close', () => document.documentElement.classList.remove('screenshot-viewing'));
+  }
+  const full = screenshotViewer.querySelector('img');
+  full.src = img.src;
+  full.alt = img.alt;
+  screenshotViewer.querySelector('figcaption').textContent = img.closest('figure').querySelector('figcaption').textContent;
+  screenshotViewer.showModal();
+  document.documentElement.classList.add('screenshot-viewing');
 }
 function prepareScreenshots() {
+  main.querySelectorAll('.screenshot-open').forEach(button => {
+    button.addEventListener('click', () => openScreenshot(button.querySelector('img')));
+  });
   main.querySelectorAll('.screenshots img').forEach(img => {
     const hideMissing = () => {
       const section = img.closest('.screenshots');
@@ -119,6 +141,7 @@ function release(a,r) {
   return `<article class="release"><div class="release-heading"><div><span class="eyebrow">${escape(a.name)}</span><h3>${escape(r.name)} <span class="pill">${escape(r.tag)}</span></h3></div><span class="muted">${date(r.date)}${a.status === 'demo' ? ' · Sample' : ''}</span></div>${r.notes ? `<div class="notes">${notes(r.notes)}</div>` : '<p class="muted">No release notes provided.</p>'}</article>`;
 }
 function render() {
+  if (screenshotViewer?.open) screenshotViewer.close();
   const hash = location.hash || '#/';
   document.querySelector('#apps-nav').setAttribute('aria-current', hash === '#/' ? 'page' : 'false');
   document.querySelector('#releases-nav').setAttribute('aria-current', hash === '#/releases' ? 'page' : 'false');
