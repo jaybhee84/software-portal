@@ -17,4 +17,98 @@ export const apps = [
     { label: 'Epson L5190', note: 'L5190 all-in-one with ADF and fax.', image: '/printers/l5190.jpg', name: 'EPSON L5190 RESETTER.rar', url: 'https://drive.google.com/file/d/153XoMpzGuDmHllDOMEw5zpJb37igRJha/view?usp=sharing' },
     { label: 'Epson L1210 / L3210 / L3250 / L3251 / L3260 / L5290', note: 'RAW 1.0.1.1 ZIP archive.', images: [{ src: '/printers/l1210.jpg', label: 'L1210' }, { src: '/printers/l3210.jpg', label: 'L3210' }, { src: '/printers/l3250.jpg', label: 'L3250' }, { src: '/printers/l3251.jpg', label: 'L3251' }, { src: '/printers/l3260.jpg', label: 'L3260' }, { src: '/printers/l5290.jpg', label: 'L5290' }], name: 'L1210, L3210, L3250, L3251, L3260, L5290 RAW 1.0.1.1.zip', url: 'https://drive.google.com/file/d/1jwPA_U34dLYmPQak-IhBUzMD0ZTZZJuq/view?usp=drive_link' }
   ] }
+,
+  {
+  "id": "epson-driver",
+  "logo": "/printers/l3210-icon.jpg",
+  "name": "EPSON Driver",
+  "initials": "Ep",
+  "color": "blue",
+  "category": "Utilities",
+  "platform": "Windows",
+  "summary": "Printer driver installers for Epson L-series printers on Windows 64-bit.",
+  "description": "Download Epson printer drivers for Windows 64-bit. The combined L120 / L121 installer supports both models; choose the matching model for other printers.",
+  "requirements": "Windows 64-bit. Choose the installer matching your printer model.",
+  "usage": "Check the model printed on your printer, download its matching installer, and follow the setup instructions.",
+  "audience": "Office and school staff setting up Epson L-series printers.",
+  "featuresTitle": "Printers covered",
+  "features": [
+    "L120 and L121 share one official Epson driver v2.60.00.",
+    "L210, L220, L360, L3110, L3150, L3210, L3250 and L5290."
+  ],
+  "downloads": [
+    {
+      "label": "Epson L120 / L121 - Combined Driver",
+      "note": "One installer for both L120 and L121. Official Epson v2.60.00 for Windows 64-bit.",
+      "images": [
+        {
+          "src": "/printers/l120.jpg",
+          "label": "L120"
+        },
+        {
+          "src": "/printers/l121.jpg",
+          "label": "L121"
+        }
+      ],
+      "name": "L120_L121_X64_260_LA.exe",
+      "url": "https://ftp.epson.com/latin/drivers/inkjet/L120_L121_X64_260_LA.exe"
+    },
+    {
+      "label": "Epson L210",
+      "image": "/printers/l210.jpg",
+      "note": "Windows 64-bit - Installer 15403.",
+      "name": "L210_x64_15403UsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1wGBjXTaNSzbn-BAAKFY_WiJPN9kAhuMI/view"
+    },
+    {
+      "label": "Epson L220",
+      "image": "/printers/l220.jpg",
+      "note": "Windows 64-bit - Installer 224.",
+      "name": "L220_x64_224JAUsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1Ob4qjJo-qmdRAIhpOJdSJhDAALpjr8iF/view"
+    },
+    {
+      "label": "Epson L360",
+      "image": "/printers/l360.jpg",
+      "note": "Windows 64-bit - Installer 224.",
+      "name": "L360_x64_224JAHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1495ZG2YUa48G8PX-YHb0Ubr8P6l94RbR/view"
+    },
+    {
+      "label": "Epson L3110",
+      "note": "Windows 64-bit - Installer 26201.",
+      "image": "/printers/l3110.jpg",
+      "name": "L3110_x64_26201JAUsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1jSTzxR_IF6oBUB3-cV8s4SY8HGApKjHE/view"
+    },
+    {
+      "label": "Epson L3150",
+      "image": "/printers/l3150.jpg",
+      "note": "Windows 64-bit - Installer 26201.",
+      "name": "L3150_x64_26201JAUsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/13Wt7G59-KkblfyfT8zKs3yjekuQ4zW8g/view"
+    },
+    {
+      "label": "Epson L3210",
+      "note": "Windows 64-bit - Installer 304.",
+      "image": "/printers/l3210.jpg",
+      "name": "L3210_x64_304JAUsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1Bf_cEgibNT-cEBkDQ0I79ICMG4kHsoVB/view"
+    },
+    {
+      "label": "Epson L3250",
+      "note": "Windows 64-bit - Installer 304.",
+      "image": "/printers/l3250.jpg",
+      "name": "L3250_x64_304JAUsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1LTtVG5LY8DB1AQmaPsThcbpJyq0_xgeq/view"
+    },
+    {
+      "label": "Epson L5290",
+      "note": "Windows 64-bit - Installer 305.",
+      "image": "/printers/l5290.jpg",
+      "name": "L5290_x64_305JAUsHomeExportAsiaML.exe",
+      "url": "https://drive.google.com/file/d/1w577mJkwjfJWFxf4JQyhXxbug_ULVnxm/view"
+    }
+  ]
+}
 ];
