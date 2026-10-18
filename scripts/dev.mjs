@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import handler from '../api/catalog.js';
 // Optional local env; silently skipped when .env is absent.
 try { process.loadEnvFile(new URL('../.env', import.meta.url)); } catch {}
-const files = { '/theme.css': ['theme.css', 'text/css'], '/ape.png': ['ape.png', 'image/png'], '/iswabe.png': ['iswabe.png', 'image/png'], '/swiss.png': ['swiss.png', 'image/png'], '/bmi.png': ['bmi.png', 'image/png'], '/iecesportal.png': ['iecesportal.png', 'image/png'], '/buzzjay.png': ['buzzjay.png', 'image/png'], '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
+const files = { '/theme.css': ['theme.css', 'text/css'], '/ape.png': ['ape.png', 'image/png'], '/iswabe.png': ['iswabe.png', 'image/png'], '/swiss.png': ['swiss.png', 'image/png'], '/bmi.png': ['bmi.png', 'image/png'], '/iecesportal.png': ['iecesportal.png', 'image/png'], '/fundwork.png': ['fundwork.png', 'image/png'], '/buzzjay.png': ['buzzjay.png', 'image/png'], '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
 const server = http.createServer(async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const path = new URL(req.url, 'http://localhost').pathname;
