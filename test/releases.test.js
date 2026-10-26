@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeReleases, releaseStats, loadApp } from '../lib/releases.js';
+import { normalizeReleases, releaseStats, loadApp, labelAssets } from '../lib/releases.js';
 const app = { id: 'test', repo: 'owner/releases', assetPattern: '\\.(exe|zip)$' };
 const fixture = { tag_name: 'v2', name: 'Release 2', published_at: '2026-01-10', body: '<script>alert(1)</script>', html_url: 'https://github.com/owner/releases/releases/tag/v2', assets: [{ name: 'setup.exe', state: 'uploaded', size: 2048, browser_download_url: 'https://github.com/owner/releases/releases/download/v2/setup.exe' }, { name: 'bad.zip', state: 'uploaded', browser_download_url: 'javascript:alert(1)' }, { name: 'source.tar', state: 'uploaded', browser_download_url: 'https://github.com/owner/releases/a' }] };
 test('only stable releases and safe matching assets are returned', () => {
@@ -96,4 +96,17 @@ test('download totals are attached to live apps', async () => {
     ? [{ ...fixture, assets: [{ ...fixture.assets[0], download_count: 42 }] }]
     : url.endsWith('/releases/latest') ? fixture : { private: false } }));
   assert.equal(result.downloadCount, 42); assert.equal(result.releaseCount, 1);
+});
+test('asset label rules tell same-platform installers apart', () => {
+  const releases = [{ tag: 'v1', assets: [{ name: 'App.Setup.1.0.0.exe' }, { name: 'App-1.0.0-win-x64.exe' }, { name: 'App-1.0.0-mac-arm64.dmg' }] }];
+  const [r] = labelAssets(releases, [{ match: 'setup', label: 'Windows · With songs', note: 'Big' }, { match: 'win-x64', label: 'Windows · App only' }]);
+  assert.deepEqual(r.assets.map(a => a.label), ['Windows · With songs', 'Windows · App only', undefined]);
+  assert.equal(r.assets[0].note, 'Big'); assert.equal(r.assets[1].note, '');
+  assert.equal(labelAssets(releases), releases);
+});
+test('extra hosted downloads are listed first beside the latest GitHub release', async () => {
+  const extraDownloads = [{ label: 'With songs', name: 'App Setup.exe', url: 'https://drive.google.com/file/d/abc123/view?usp=sharing' }, { name: 'bad.exe', url: 'https://evil.example/x.exe' }];
+  const result = await loadApp({ ...app, extraDownloads }, async url => ({ ok: true, status: 200, json: async () => url.endsWith('/releases/latest') ? fixture : url.includes('/releases?') ? [fixture] : { private: false } }));
+  assert.deepEqual(result.releases[0].assets.map(a => a.name), ['App Setup.exe', 'setup.exe']);
+  assert.equal(result.releases[0].assets[0].url, 'https://drive.google.com/uc?export=download&id=abc123');
 });
