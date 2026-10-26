@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeReleases, releaseStats, loadApp, labelAssets } from '../lib/releases.js';
+import { normalizeReleases, releaseStats, loadApp, labelAssets, latestInFolder } from '../lib/releases.js';
 const app = { id: 'test', repo: 'owner/releases', assetPattern: '\\.(exe|zip)$' };
 const fixture = { tag_name: 'v2', name: 'Release 2', published_at: '2026-01-10', body: '<script>alert(1)</script>', html_url: 'https://github.com/owner/releases/releases/tag/v2', assets: [{ name: 'setup.exe', state: 'uploaded', size: 2048, browser_download_url: 'https://github.com/owner/releases/releases/download/v2/setup.exe' }, { name: 'bad.zip', state: 'uploaded', browser_download_url: 'javascript:alert(1)' }, { name: 'source.tar', state: 'uploaded', browser_download_url: 'https://github.com/owner/releases/a' }] };
 test('only stable releases and safe matching assets are returned', () => {
@@ -109,4 +109,20 @@ test('extra hosted downloads are listed first beside the latest GitHub release',
   const result = await loadApp({ ...app, extraDownloads }, async url => ({ ok: true, status: 200, json: async () => url.endsWith('/releases/latest') ? fixture : url.includes('/releases?') ? [fixture] : { private: false } }));
   assert.deepEqual(result.releases[0].assets.map(a => a.name), ['App Setup.exe', 'setup.exe']);
   assert.equal(result.releases[0].assets[0].url, 'https://drive.google.com/uc?export=download&id=abc123');
+});
+const entry = (id, name, kind = 'file/d') => `<div class="flip-entry" id="entry-${id}"><div class="flip-entry-info"><a href="https://drive.google.com/${kind}/${id}${kind === 'file/d' ? '/view?usp=drive_web' : ''}" target="_blank"><div class="flip-entry-title">${name}</div></a></div></div>`;
+const folderHTML = entry('f1', 'Setup 9.9.9 backups', 'drive/folders') + entry('a1', 'App Setup 1.2.0.exe') + entry('a2', 'App Setup 1.10.0.exe') + entry('a3', 'App Setup 1.9.0.exe') + entry('a4', 'Readme &amp; notes.txt');
+test('the highest version matching the pattern is picked from a Drive folder', () => {
+  assert.deepEqual(latestInFolder(folderHTML, 'Setup.*\.exe$'), { id: 'a2', name: 'App Setup 1.10.0.exe' });
+  assert.equal(latestInFolder(folderHTML, 'portable'), null);
+});
+test('extra downloads follow the newest installer in a watched Drive folder', async () => {
+  const extraDownloads = [{ label: 'With songs', folder: 'https://drive.google.com/drive/folders/fold_1?usp=sharing', match: 'Setup.*\.exe$', name: 'App Setup 1.0.0.exe', url: 'https://drive.google.com/file/d/old/view' }];
+  const fetcher = async url => url.includes('embeddedfolderview?id=fold_1') ? { ok: true, text: async () => folderHTML }
+    : url.includes('uc?export=download&id=a2') ? { ok: true, headers: new Headers({ 'content-type': 'text/html' }), text: async () => '<span class="uc-name-size"><a>App Setup 1.10.0.exe</a> (685M)</span>' }
+    : { ok: true, status: 200, json: async () => url.endsWith('/releases/latest') ? fixture : url.includes('/releases?') ? [fixture] : { private: false } };
+  const [asset] = (await loadApp({ ...app, extraDownloads }, fetcher)).releases[0].assets;
+  assert.equal(asset.name, 'App Setup 1.10.0.exe'); assert.equal(asset.url, 'https://drive.google.com/uc?export=download&id=a2'); assert.equal(asset.size, 685 * 1024 ** 2);
+  const offline = await loadApp({ ...app, extraDownloads }, async url => url.includes('drive.google.com') ? { ok: false } : fetcher(url));
+  assert.equal(offline.releases[0].assets[0].name, 'App Setup 1.0.0.exe');
 });
