@@ -3,7 +3,9 @@ let catalog, query = '', category = 'All apps';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => value ? new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Date unavailable';
 const size = bytes => bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.ceil(bytes / 1024)} KB`;
-const icon = a => a.logo ? `<img class="app-icon app-logo" src="${escape(a.logo)}" alt="" width="56" height="56">` : `<span class="app-icon">${escape(a.initials)}</span>`;
+const logo = a => `<img class="app-icon app-logo" src="${escape(a.logo)}" alt="" width="56" height="56">`;
+// logoAnimation 'notes': the logo bobs while music notes float up from it (CSS only; paused for reduced motion).
+const icon = a => !a.logo ? `<span class="app-icon">${escape(a.initials)}</span>` : a.logoAnimation === 'notes' ? `<span class="logo-notes">${logo(a)}<span class="notes" aria-hidden="true"><i>&#9834;</i><i>&#9835;</i><i>&#9834;</i><i>&#9835;</i></span></span>` : logo(a);
 const detailURL = a => `#/app/${encodeURIComponent(a.id)}`;
 const count = n => Number(n).toLocaleString();
 const shortCount = n => n >= 10000 ? new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 }).format(n) : count(n);
