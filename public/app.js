@@ -33,11 +33,13 @@ const platforms = {
   macArm: { tone: 'macarm', label: 'macOS \u00b7 Apple Silicon', mark: appleMark, fits: 'For Macs with an Apple chip (M1, M2, M3, M4) \u2014 late 2020 and newer.', examples: 'MacBook Air M1 and newer, MacBook Pro 14-inch and 16-inch (2021 and newer), iMac 24-inch, Mac mini M1 and newer, Mac Studio.' },
   macIntel: { tone: 'macintel', label: 'macOS \u00b7 Intel', mark: appleMark, fits: 'For older Macs with an Intel processor \u2014 2020 and earlier.', examples: 'MacBook Air 2018\u20132020, MacBook Pro 2016\u20132019 and the 2020 13-inch Intel model, iMac 21.5-inch and 27-inch up to 2020, Mac mini 2018.' },
   drive: { tone: 'drive', label: 'Google Drive', mark: '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.5h8.4A1.5 1.5 0 0 1 21 9v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>', fits: '', examples: '' },
+  android: { tone: 'archive', label: 'Android', mark: '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 18h4"/></svg>', fits: 'APK installer for Android devices.', examples: '' },
   archive: { tone: 'archive', label: 'Archive', mark: '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8h16v11H4zM3 4h18v4H3zM10 12h4"/></svg>', fits: '', examples: '' }
 };
 function platformOf(asset) {
   if (asset.folder) return platforms.drive;
   if (/\.(exe|msi)$/i.test(asset.name)) return platforms.windows;
+  if (/\.apk$/i.test(asset.name)) return platforms.android;
   if (/arm64/i.test(asset.name)) return platforms.macArm;
   if (/\.dmg$|mac/i.test(asset.name)) return platforms.macIntel;
   return platforms.archive;
