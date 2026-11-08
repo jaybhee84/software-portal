@@ -8,7 +8,7 @@ const { download, installers } = runInNewContext(
   source.slice(source.indexOf('function download('), source.indexOf('function card(')) +
   source.slice(source.indexOf('function installers('), source.indexOf('function screenshots(')) +
   '\n({ download, installers });',
-  { escape: String, platformLabel: () => 'Windows', downloadIcon: '', detailURL: a => '#/app/' + a.id }
+  { escape: String, platformLabel: () => 'Windows', platformOf: () => ({ label: 'Windows', fits: 'For Windows computers.', examples: 'PC brands', mark: 'windows', tone: 'windows' }), appleMark: 'apple', downloadIcon: '', detailURL: a => '#/app/' + a.id }
 );
 
 test('one installer downloads directly without a chooser', () => {
@@ -24,4 +24,16 @@ test('multiple installers still open the app details to choose', () => {
   const app = { id: 'ieces-portal', name: 'IECES Portal' };
   assert.match(download(app, { assets: [{}, {}] }), /href="#\/app\/ieces-portal"/);
   assert.match(download(app, { assets: [] }), /No installer yet/);
+});
+
+
+test('multiple installers use compact cards without brand examples', () => {
+  const html = installers({ releases: [{ assets: [
+    { name: 'setup.exe', url: 'https://example.com/setup.exe' },
+    { name: 'app.apk', url: 'https://example.com/app.apk' }
+  ] }] });
+  assert.match(html, /installer-section compact/);
+  assert.match(html, /setup.exe/);
+  assert.match(html, /app.apk/);
+  assert.doesNotMatch(html, /installer-examples/);
 });

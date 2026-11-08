@@ -32,3 +32,4 @@
 .logo-notes .notes i:nth-child(even){animation-name:note-rise-left}
 @keyframes note-rise-left{0%{opacity:0;transform:translate(0,0) scale(.6) rotate(10deg)}20%{opacity:1}70%{opacity:.9}100%{opacity:0;transform:translate(-10px,var(--rise,-48px)) scale(1.1) rotate(-12deg)}}
 @media(prefers-reduced-motion:reduce){.logo-notes .app-logo{animation:none}.logo-notes .notes{display:none}}
+.installer-section.compact{width:fit-content;max-width:100%;padding:16px;margin-bottom:28px}.installer-section.compact .section-label{margin-bottom:12px}.compact .installer-grid{display:flex;flex-wrap:wrap;gap:12px}.compact .installer{width:300px;max-width:100%;padding:12px;gap:8px;align-self:flex-start}.compact .installer-file{margin-top:0;padding-top:8px}
